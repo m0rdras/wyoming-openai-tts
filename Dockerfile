@@ -5,7 +5,7 @@ FROM python:3.13-slim AS builder
 ENV POETRY_HOME="/opt/poetry" \
     POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_CREATE=false \
-    POETRY_VERSION=1.7.1
+    POETRY_VERSION=1.8.4
 
 # Install poetry and build dependencies in a single layer
 RUN pip install "poetry==$POETRY_VERSION" build
