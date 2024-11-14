@@ -1,5 +1,5 @@
 # Build stage
-FROM python:3.13-slim as builder
+FROM python:3.13-slim AS builder
 
 # Install build dependencies
 ENV POETRY_HOME="/opt/poetry" \
@@ -20,7 +20,7 @@ RUN poetry build --format wheel \
     && pip wheel --no-deps --no-index --wheel-dir /wheels dist/*.whl
 
 # Runtime stage
-FROM python:3.13-slim as runtime
+FROM python:3.13-slim AS runtime
 
 # Copy wheel and install it
 COPY --from=builder /wheels/*.whl /tmp/
