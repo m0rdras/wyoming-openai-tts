@@ -1,20 +1,21 @@
 # Build stage
 FROM python:3.13-slim AS builder
 
-# Install build dependencies
+# Install build dependencies and update pip
 ENV POETRY_HOME="/opt/poetry" \
     POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_VERSION=1.8.4
 
-# Install poetry and build dependencies in a single layer
-RUN pip install "poetry==$POETRY_VERSION" build
+# Update pip and install poetry and build in a single layer
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir "poetry==$POETRY_VERSION" build
 
 # Copy only dependency files first to leverage Docker cache
 WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 
-# Install dependencies and build wheel
+# Copy the rest of the application and build wheel
 COPY . .
 RUN poetry build --format wheel \
     && pip wheel --no-deps --no-index --wheel-dir /wheels dist/*.whl
@@ -22,9 +23,12 @@ RUN poetry build --format wheel \
 # Runtime stage
 FROM python:3.13-slim AS runtime
 
-# Copy wheel and install it
+# Update pip in runtime image
+RUN pip install --no-cache-dir --upgrade pip
+
+# Copy wheel and install it with root user action specified
 COPY --from=builder /wheels/*.whl /tmp/
-RUN pip install --no-cache-dir /tmp/*.whl && rm /tmp/*.whl
+RUN pip install --no-cache-dir --root-user-action=ignore /tmp/*.whl && rm /tmp/*.whl
 
 EXPOSE 10200
 
