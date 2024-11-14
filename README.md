@@ -1,27 +1,16 @@
-# Wyoming Microsoft TTS
-Wyoming protocol server for Microsoft Azure text-to-speech.
+# Wyoming OpenAI TTS
+Wyoming protocol server for OpenAI text-to-speech.
 
-This Python package provides a Wyoming integration for Microsoft Azure text-to-speech and can be directly used with [Home Assistant](https://www.home-assistant.io/) voice and [Rhasspy](https://github.com/rhasspy/rhasspy3).
+This Python package provides a Wyoming integration for OpenAI text-to-speech and can be directly used with [Home Assistant](https://www.home-assistant.io/) voice and [Rhasspy](https://github.com/rhasspy/rhasspy3).
 
-## Azure Speech Service
-This program uses [Microsoft Azure Speech Service](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/). You can sign up to a free Azure account which comes with free tier of 500K characters per month, this should be enough for running a voice assistant as each command is relatively short. Plus, on Home Assistant the outputs are cached so each response will only be requested once. Once this amount is exceeded Azure could charge you for each second used (Current pricing is $0.36 per audio hour). I am not responsible for any incurred charges and recommend you set up a spending limit to reduce your exposure. However, for normal usage the free tier could suffice and the resource should not switch to a paid service automatically.
-
-If you have not set up a speech resource, you can follow the instructions below. (you only need to do this once and works both for [Speech-to-Text](https://github.com/hugobloem/wyoming-microsoft-stt) and [Text-to-Speech](https://github.com/hugobloem/wyoming-microsoft-tts))
-
-1. Sign in or create an account on [portal.azure.com](https://portal.azure.com).
-2. Create a subscription by searching for `subscription` in the search bar. [Consult Microsoft Learn for more information](https://learn.microsoft.com/en-gb/azure/cost-management-billing/manage/create-subscription#create-a-subscription-in-the-azure-portal).
-3. Create a speech resource by searching for `speech service`.
-4. Select the subscription you created, pick or create a resource group, select a region, pick an identifiable name, and select the pricing tier (you probably want Free F0)
-5. Once created, copy one of the keys from the speech service page. You will need this to run this program.
-
+## OpenAI API
+This program uses OpenAI's text-to-speech API. You will need an OpenAI API key to use this service. OpenAI charges per character for TTS usage. Please check their [pricing page](https://openai.com/pricing) for current rates.
 
 ## Installation
-Depending on your use case there are different installation options.
-
-- **Using pip**
-  Clone the repository and install the package using pip. Please note the platform requirements as noted [here](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/quickstarts/setup-platform?tabs=linux%2Cubuntu%2Cdotnetcli%2Cdotnet%2Cjre%2Cmaven%2Cnodejs%2Cmac%2Cpypi&pivots=programming-language-python#platform-requirements).
+1. Get an OpenAI API key from [platform.openai.com](https://platform.openai.com)
+2. Install the package using Poetry:
   ```sh
-  pip install .
+  poetry install
   ```
 
 - **Home Assistant Add-On**
@@ -33,7 +22,7 @@ Depending on your use case there are different installation options.
 - **Docker container**
   To run as a Docker container use the following command:
   ```bash
-  docker run ghcr.io/hugobloem/wyoming-microsoft-tts-noha:latest --<key> <value>
+  docker run ghcr.io/m0rdras/wyoming-openai-tts-noha:latest --<key> <value>
   ```
   For the relevant keys please look at [the table below](#usage)
 
@@ -42,17 +31,14 @@ Depending on the installation method parameters are parsed differently. However,
 
 For the bare-metal Python install the program is run as follows:
 ```python
-python -m wyoming-microsoft-tts --<key> <value>
+python -m wyoming-openai-tts --<key> <value>
 ```
 
 | Key | Optional | Description |
 |---|---|---|
-| `service-region` | No | Azure service region e.g., `uksouth` |
-| `subscription-key` | No | Azure subscription key |
+| `api-key` | No | OpenAI API key |
 | `uri` | No | Uri where the server will be broadcasted e.g., `tcp://0.0.0.0:10200` |
 | `download-dir` | Yes | Directory to download voices.json into (default: /tmp/) |
-| `voice` | Yes | Default voice to set for transcription, default: `en-GB-SoniaNeural` |
+| `voice` | Yes | Default voice to set for transcription (default: `alloy`) |
 | `auto-punctuation` | Yes | Automatically add punctuation (default: `".?!"`) |
 | `samples-per-chunk` | Yes | Number of samples per audio chunk (default: 1024) |
-| `update-voices` | Yes | Download latest languages.json during startup |
-| `debug` | Yes | Log debug messages |

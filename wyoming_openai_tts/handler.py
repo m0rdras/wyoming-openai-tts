@@ -11,12 +11,12 @@ from wyoming.info import Describe, Info
 from wyoming.server import AsyncEventHandler
 from wyoming.tts import Synthesize
 
-from .microsoft_tts import MicrosoftTTS
+from .openai_tts import OpenAITTS
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class MicrosoftEventHandler(AsyncEventHandler):
+class OpenAIEventHandler(AsyncEventHandler):
     """Event handler for clients of the server."""
 
     def __init__(
@@ -31,7 +31,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
 
         self.cli_args = cli_args
         self.wyoming_info_event = wyoming_info.event()
-        self.microsoft_tts = MicrosoftTTS(cli_args)
+        self.openai_tts = OpenAITTS(cli_args)
 
     async def handle_event(self, event: Event) -> bool:
         """Handle an event."""
@@ -63,7 +63,7 @@ class MicrosoftEventHandler(AsyncEventHandler):
             if not has_punctuation:
                 text = text + self.cli_args.auto_punctuation[0]
 
-        output_path = self.microsoft_tts.synthesize(
+        output_path = self.openai_tts.synthesize(
             text=synthesize.text, voice=synthesize.voice.name
         )
 

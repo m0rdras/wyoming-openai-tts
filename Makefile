@@ -1,9 +1,9 @@
 .PHONY: local run update
 
 VERSION := 1.0.0
-TAG := hugobloem/wyoming-microsoft-tts
+TAG := m0rdras/wyoming-openai-tts
 PLATFORMS := linux/amd64,linux/arm64,linux/arm/v7
-VOICE := en_GB-SoniaNeural
+VOICE := alloy
 HOST := 0.0.0.0
 PORT := 10200
 

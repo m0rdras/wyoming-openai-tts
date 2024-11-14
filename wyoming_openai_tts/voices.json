@@ -1,0 +1,34 @@
+{
+    "voices": {
+        "alloy": {
+            "name": "Alloy",
+            "quality": "Neural",
+            "language": {"code": "en-US", "name_english": "English (United States)"}
+        },
+        "echo": {
+            "name": "Echo",
+            "quality": "Neural",
+            "language": {"code": "en-US", "name_english": "English (United States)"}
+        },
+        "fable": {
+            "name": "Fable",
+            "quality": "Neural",
+            "language": {"code": "en-US", "name_english": "English (United States)"}
+        },
+        "onyx": {
+            "name": "Onyx",
+            "quality": "Neural",
+            "language": {"code": "en-US", "name_english": "English (United States)"}
+        },
+        "nova": {
+            "name": "Nova",
+            "quality": "Neural",
+            "language": {"code": "en-US", "name_english": "English (United States)"}
+        },
+        "shimmer": {
+            "name": "Shimmer",
+            "quality": "Neural",
+            "language": {"code": "en-US", "name_english": "English (United States)"}
+        }
+    }
+} 

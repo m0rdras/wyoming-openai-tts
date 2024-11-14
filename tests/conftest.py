@@ -2,7 +2,7 @@
 
 from types import SimpleNamespace
 import pytest
-from wyoming_microsoft_tts.microsoft_tts import MicrosoftTTS
+from wyoming_openai_tts.openai_tts import OpenAITTS
 import os
 
 
@@ -10,16 +10,15 @@ import os
 def configuration():
     """Return configuration."""
     return {
-        "voice": "en-GB-SoniaNeural",
+        "voice": "alloy",
     }
 
 
 @pytest.fixture
-def microsoft_tts(configuration):
-    """Return MicrosoftTTS instance."""
+def openai_tts(configuration):
+    """Return OpenAITTS instance."""
     args = SimpleNamespace(
-        subscription_key=os.environ.get("SPEECH_KEY"),
-        service_region=os.environ.get("SPEECH_REGION"),
+        api_key=os.environ.get("OPENAI_API_KEY"),
         **configuration
     )
-    return MicrosoftTTS(args)
+    return OpenAITTS(args)

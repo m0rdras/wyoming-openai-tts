@@ -8,68 +8,39 @@ from typing import Any
 from wyoming.info import Attribution, Info, TtsProgram, TtsVoice
 from wyoming.server import AsyncServer
 
-from wyoming_microsoft_tts.download import get_voices
-from wyoming_microsoft_tts.handler import MicrosoftEventHandler
-from wyoming_microsoft_tts.version import __version__
+from wyoming_openai_tts.download import get_voices
+from wyoming_openai_tts.handler import OpenAIEventHandler
+from wyoming_openai_tts.version import __version__
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def main() -> None:
-    """Start Wyoming Microsoft TTS server."""
+    """Start Wyoming OpenAI TTS server."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--service-region",
+        "--api-key",
         required=True,
-        help="Microsoft Azure region (e.g., westus2)",
-    )
-    parser.add_argument(
-        "--subscription-key",
-        required=True,
-        help="Microsoft Azure subscription key",
+        help="OpenAI API key",
     )
     parser.add_argument(
         "--voice",
-        default="en-GB-SoniaNeural",
-        help="Default Microsoft voice to use (e.g., en-GB-SoniaNeural)",
-    )
-    parser.add_argument(
-        "--download-dir",
-        default="/tmp/",
-        type=str,
-        help="Directory to download voices.json into (default: /tmp/)",
+        default="alloy",
+        help="Default OpenAI voice to use (alloy, echo, fable, onyx, nova, or shimmer)",
     )
     parser.add_argument(
         "--uri", default="tcp://0.0.0.0:10200", help="unix:// or tcp://"
     )
-    #
     parser.add_argument(
-        "--speaker", type=str, help="Name or id of speaker for default voice"
+        "--debug", action="store_true", help="Log DEBUG messages"
     )
-    #
-    parser.add_argument(
-        "--auto-punctuation", default=".?!", help="Automatically add punctuation"
-    )
-    parser.add_argument("--samples-per-chunk", type=int, default=1024)
-    #
-    parser.add_argument(
-        "--update-voices",
-        action="store_true",
-        help="Download latest voices.json during startup",
-    )
-    #
-    parser.add_argument("--debug", action="store_true", help="Log DEBUG messages")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
+
     # Load voice info
-    voices_info = get_voices(
-        args.download_dir,
-        update_voices=args.update_voices,
-        region=args.service_region,
-        key=args.subscription_key,
-    )
+    voices_info = get_voices()
 
     # Resolve aliases for backwards compatibility with old voice names
     aliases_info: dict[str, Any] = {}
@@ -110,11 +81,11 @@ async def main() -> None:
     wyoming_info = Info(
         tts=[
             TtsProgram(
-                name="microsoft",
-                description="A fast, local, neural text to speech engine",
+                name="openai",
+                description="OpenAI's text-to-speech service",
                 attribution=Attribution(
-                    name="Microsoft",
-                    url="https://github.com/hugobloem/wyoming-microsoft-tts",
+                    name="OpenAI",
+                    url="https://github.com/m0rdras/wyoming-openai-tts",
                 ),
                 installed=True,
                 version=__version__,
@@ -129,7 +100,7 @@ async def main() -> None:
     _LOGGER.info("Ready")
     await server.run(
         partial(
-            MicrosoftEventHandler,
+            OpenAIEventHandler,
             wyoming_info,
             args,
         )

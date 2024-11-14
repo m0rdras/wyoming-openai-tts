@@ -5,35 +5,17 @@
             "name": "Debug __main__",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/wyoming_microsoft_tts/__main__.py",
+            "program": "${workspaceFolder}/wyoming_openai_tts/__main__.py",
             "console": "integratedTerminal",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}",
             },
             "args": [
-                // "--microsoft", "./microsoft_tts.py",
-                "--voice", "en-GB-SoniaNeural",
+                "--voice", "alloy",
                 "--download-dir", "./temp/",
-                "--service-region", "uksouth", 
+                "--api-key", "<your-api-key>",
                 "--debug",
-                "--uri", "tcp://0.0.0.0:10200",
-                "--update-voices"
-            ]
-        },
-        {
-            "name": "Debug microsoft_tts.py",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/microsoft_tts.py",
-            "console": "integratedTerminal",
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}",
-            },
-            "args": [
-                "--voice", "en-GB-SoniaNeural",
-                "--service-region", "uksouth", 
-                "--output-dir", "./temp/",
-                "--debug"
+                "--uri", "tcp://0.0.0.0:10200"
             ]
         }
     ]
