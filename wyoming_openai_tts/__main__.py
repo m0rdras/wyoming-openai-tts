@@ -81,7 +81,7 @@ async def main() -> None:
     wyoming_info = Info(
         tts=[
             TtsProgram(
-                name="openai",
+                name="openai-tts",
                 description="OpenAI's text-to-speech service",
                 attribution=Attribution(
                     name="OpenAI",
