@@ -9,7 +9,7 @@ ENV POETRY_HOME="/opt/poetry" \
 
 # Update pip and install poetry and build in a single layer
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir "poetry==$POETRY_VERSION" build
+    pip install --nago-cache-dir "poetry==$POETRY_VERSION" build
 
 # Copy only dependency files first to leverage Docker cache
 WORKDIR /app
@@ -30,7 +30,7 @@ RUN pip install --no-cache-dir --upgrade pip
 COPY --from=builder /wheels/*.whl /tmp/
 RUN pip install --no-cache-dir --root-user-action=ignore /tmp/*.whl && rm /tmp/*.whl
 
-EXPOSE 10200
+EXPOSE 12200
 
 # Use array form of ENTRYPOINT for better signal handling
 ENTRYPOINT ["python", "-m", "wyoming_openai_tts"]
