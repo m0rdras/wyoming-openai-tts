@@ -34,6 +34,11 @@ async def main() -> None:
     parser.add_argument(
         "--debug", action="store_true", help="Log DEBUG messages"
     )
+    parser.add_argument(
+        "--auto-punctuation",
+        default=".?!",
+        help="Automatically add punctuation (default: '.?!')",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
