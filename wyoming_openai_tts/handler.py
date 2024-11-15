@@ -63,8 +63,10 @@ class OpenAIEventHandler(AsyncEventHandler):
             if not has_punctuation:
                 text = text + self.cli_args.auto_punctuation[0]
 
+        voice_name = synthesize.voice.name if synthesize.voice else self.cli_args.voice
+
         output_path = self.openai_tts.synthesize(
-            text=synthesize.text, voice=synthesize.voice.name
+            text=synthesize.text, voice=voice_name
         )
 
         wav_file: wave.Wave_read = wave.open(output_path, "rb")

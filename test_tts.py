@@ -11,7 +11,7 @@ output_dir.mkdir(exist_ok=True)
 args = SimpleNamespace(
     api_key=os.environ.get("OPENAI_API_KEY"),  # Make sure to set this env variable
     voice="alloy",
-    output_dir=output_dir  # Add output directory to args
+    output_dir=output_dir,
 )
 
 # Initialize TTS
@@ -19,4 +19,4 @@ tts = OpenAITTS(args)
 
 # Test synthesis
 output_file = tts.synthesize("Hello, this is a test of OpenAI text to speech!")
-print(f"Audio saved to: {output_file}") 
+print(f"Audio saved to: {output_file}")

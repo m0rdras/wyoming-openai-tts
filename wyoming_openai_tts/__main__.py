@@ -39,6 +39,12 @@ async def main() -> None:
         default=".?!",
         help="Automatically add punctuation (default: '.?!')",
     )
+    parser.add_argument(
+        "--samples-per-chunk",
+        type=int,
+        default=2048,
+        help="Number of samples to send in each audio chunk (default: 2048)",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)

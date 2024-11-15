@@ -13,15 +13,18 @@ class OpenAITTS:
     def __init__(self, args) -> None:
         """Initialize."""
         _LOGGER.debug("Initialize OpenAI TTS")
+        _LOGGER.info("OpenAI Key: %s", args.api_key)
         self.args = args
         self.client = OpenAI(api_key=args.api_key)
 
         # Use provided output directory or create a temporary one
         self.output_dir = getattr(args, 'output_dir', None)
         if self.output_dir is None:
-            temp_dir = tempfile.TemporaryDirectory()
-            self.output_dir = Path(temp_dir.name)
-        
+            self._temp_dir = tempfile.TemporaryDirectory()  # Store the object to prevent cleanup
+            self.output_dir = Path(self._temp_dir.name)
+        else:
+            self.output_dir = Path(self.output_dir)
+
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def synthesize(self, text, voice=None):
@@ -32,14 +35,15 @@ class OpenAITTS:
 
         try:
             file_name = self.output_dir / f"{time.monotonic_ns()}.wav"
-            
+
             response = self.client.audio.speech.create(
                 model="tts-1",
                 voice=voice,
-                input=text
+                input=text,
+                response_format="wav",
             )
-            
-            response.stream_to_file(str(file_name))
+
+            response.write_to_file(str(file_name))
             _LOGGER.debug(f"Speech synthesized for text [{text}]")
             return str(file_name)
 
