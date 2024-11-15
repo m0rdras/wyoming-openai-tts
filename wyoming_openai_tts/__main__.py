@@ -59,8 +59,8 @@ async def main() -> None:
             name=voice_name,
             description=get_description(voice_info),
             attribution=Attribution(
-                name="Microsoft",
-                url="https://github.com/hugobloem/wyoming-microsoft-tts",
+                name="OpenAI",
+                url="https://github.com/m0rdras/wyoming-openai-tts",
             ),
             installed=True,
             version=__version__,
