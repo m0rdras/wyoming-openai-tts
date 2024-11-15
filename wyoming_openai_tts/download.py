@@ -10,6 +10,7 @@ _LOGGER = logging.getLogger(__name__)
 
 class VoiceNotFoundError(Exception):
     """Raised when a voice is not found."""
+
     pass
 
 def get_voices() -> dict[str, Any]:

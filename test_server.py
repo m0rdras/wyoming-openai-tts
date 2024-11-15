@@ -16,7 +16,7 @@ async def main():
     text = sys.argv[1]
     wav_path = Path(sys.argv[2])
 
-    print(f"Connecting to Wyoming server at localhost:10200...")
+    print("Connecting to Wyoming server at localhost:10200...")
     async with AsyncTcpClient('localhost', 10200) as client:
         print(f"Sending text to synthesize: {text}")
 
