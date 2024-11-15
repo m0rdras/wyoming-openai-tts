@@ -1,7 +1,6 @@
 """Event handler for clients of the server."""
 import argparse
 import logging
-import math
 import os
 import wave
 
@@ -20,11 +19,11 @@ class OpenAIEventHandler(AsyncEventHandler):
     """Event handler for clients of the server."""
 
     def __init__(
-        self,
-        wyoming_info: Info,
-        cli_args: argparse.Namespace,
-        *args,
-        **kwargs,
+            self,
+            wyoming_info: Info,
+            cli_args: argparse.Namespace,
+            *args,
+            **kwargs,
     ) -> None:
         """Initialize."""
         super().__init__(*args, **kwargs)
@@ -69,42 +68,44 @@ class OpenAIEventHandler(AsyncEventHandler):
             text=synthesize.text, voice=voice_name
         )
 
-        wav_file: wave.Wave_read = wave.open(output_path, "rb")
-        with wav_file:
-            rate = wav_file.getframerate()
-            width = wav_file.getsampwidth()
-            channels = wav_file.getnchannels()
+        try:
+            with wave.open(output_path, "rb") as wav_file:
+                rate = wav_file.getframerate()
+                width = wav_file.getsampwidth()
+                channels = wav_file.getnchannels()
 
-            await self.write_event(
-                AudioStart(
-                    rate=rate,
-                    width=width,
-                    channels=channels,
-                ).event(),
-            )
-
-            # Audio
-            audio_bytes = wav_file.readframes(wav_file.getnframes())
-            bytes_per_sample = width * channels
-            bytes_per_chunk = bytes_per_sample * self.cli_args.samples_per_chunk
-            num_chunks = int(math.ceil(len(audio_bytes) / bytes_per_chunk))
-
-            # Split into chunks
-            for i in range(num_chunks):
-                offset = i * bytes_per_chunk
-                chunk = audio_bytes[offset : offset + bytes_per_chunk]
                 await self.write_event(
-                    AudioChunk(
-                        audio=chunk,
+                    AudioStart(
                         rate=rate,
                         width=width,
                         channels=channels,
                     ).event(),
                 )
 
-        await self.write_event(AudioStop().event())
-        _LOGGER.debug("Completed request")
+                # Read and send chunks
+                frames_per_chunk = self.cli_args.samples_per_chunk
+                while True:
+                    chunk = wav_file.readframes(frames_per_chunk)
+                    if not chunk:
+                        break
 
-        os.unlink(output_path)
+                    await self.write_event(
+                        AudioChunk(
+                            audio=chunk,
+                            rate=rate,
+                            width=width,
+                            channels=channels,
+                        ).event(),
+                    )
+
+            await self.write_event(AudioStop().event())
+            _LOGGER.debug("Completed request")
+
+        finally:
+            # Clean up the temporary file
+            try:
+                os.unlink(output_path)
+            except Exception as e:
+                _LOGGER.warning(f"Failed to delete temporary file {output_path}: {str(e)}")
 
         return True
