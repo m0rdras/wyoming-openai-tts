@@ -14,6 +14,16 @@ from wyoming_openai_tts.version import __version__
 
 _LOGGER = logging.getLogger(__name__)
 
+SUPPORTED_LANGUAGES = [
+    "af-ZA", "ar-AR", "hy-AM", "az-AZ", "be-BY", "bs-BA", "bg-BG", "ca-ES",
+    "zh-CN", "hr-HR", "cs-CZ", "da-DK", "nl-NL", "en-US", "et-EE", "fi-FI",
+    "fr-FR", "gl-ES", "de-DE", "el-GR", "he-IL", "hi-IN", "hu-HU", "is-IS",
+    "id-ID", "it-IT", "ja-JP", "kn-IN", "kk-KZ", "ko-KR", "lv-LV", "lt-LT",
+    "mk-MK", "ms-MY", "mr-IN", "mi-NZ", "ne-NP", "no-NO", "fa-IR", "pl-PL",
+    "pt-PT", "ro-RO", "ru-RU", "sr-RS", "sk-SK", "sl-SI", "es-ES", "sw-KE",
+    "sv-SE", "tl-PH", "ta-IN", "th-TH", "tr-TR", "uk-UA", "ur-PK", "vi-VN",
+    "cy-GB"
+]
 
 async def main() -> None:
     """Start Wyoming OpenAI TTS server."""
@@ -70,12 +80,7 @@ async def main() -> None:
             ),
             installed=True,
             version=__version__,
-            languages=[
-                voice_info.get("language", {}).get(
-                    "code",
-                    voice_info.get("espeak", {}).get("voice", voice_name.split("_")[0]),
-                )
-            ],
+            languages=SUPPORTED_LANGUAGES,
             #
             # Don't send speakers for now because it overflows StreamReader buffers
             # speakers=[
