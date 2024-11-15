@@ -64,48 +64,11 @@ class OpenAIEventHandler(AsyncEventHandler):
 
         voice_name = synthesize.voice.name if synthesize.voice else self.cli_args.voice
 
-        output_path = self.openai_tts.synthesize(
-            text=synthesize.text, voice=voice_name
+        success = await self.openai_tts.stream_to_wyoming(
+            text=text,
+            voice=voice_name,
+            event_handler=self,
+            samples_per_chunk=self.cli_args.samples_per_chunk
         )
 
-        try:
-            with wave.open(output_path, "rb") as wav_file:
-                rate = wav_file.getframerate()
-                width = wav_file.getsampwidth()
-                channels = wav_file.getnchannels()
-
-                await self.write_event(
-                    AudioStart(
-                        rate=rate,
-                        width=width,
-                        channels=channels,
-                    ).event(),
-                )
-
-                # Read and send chunks
-                frames_per_chunk = self.cli_args.samples_per_chunk
-                while True:
-                    chunk = wav_file.readframes(frames_per_chunk)
-                    if not chunk:
-                        break
-
-                    await self.write_event(
-                        AudioChunk(
-                            audio=chunk,
-                            rate=rate,
-                            width=width,
-                            channels=channels,
-                        ).event(),
-                    )
-
-            await self.write_event(AudioStop().event())
-            _LOGGER.debug("Completed request")
-
-        finally:
-            # Clean up the temporary file
-            try:
-                os.unlink(output_path)
-            except Exception as e:
-                _LOGGER.warning(f"Failed to delete temporary file {output_path}: {str(e)}")
-
-        return True
+        return success
