@@ -13,7 +13,6 @@ class OpenAITTS:
     def __init__(self, args) -> None:
         """Initialize."""
         _LOGGER.debug("Initialize OpenAI TTS")
-        _LOGGER.info("OpenAI Key: %s", args.api_key)
         self.args = args
         self.client = OpenAI(api_key=args.api_key)
 
