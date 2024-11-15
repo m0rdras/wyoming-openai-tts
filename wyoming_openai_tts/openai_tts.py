@@ -35,14 +35,17 @@ class OpenAITTS:
         try:
             file_name = self.output_dir / f"{time.monotonic_ns()}.wav"
 
-            response = self.client.audio.speech.create(
-                model="tts-1",
-                voice=voice,
-                input=text,
-                response_format="wav",
-            )
+            with self.client.audio.speech.with_streaming_response.create(
+                    model="tts-1",
+                    voice=voice,
+                    input=text,
+                    response_format="wav",
+            ) as response:
+                # Stream the response directly to file
+                with open(file_name, 'wb') as f:
+                    for chunk in response.iter_bytes():
+                        f.write(chunk)
 
-            response.write_to_file(str(file_name))
             _LOGGER.debug(f"Speech synthesized for text [{text}]")
             return str(file_name)
 
