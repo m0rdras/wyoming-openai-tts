@@ -28,9 +28,10 @@ fi
 
 # Construct the command
 CMD="python -m wyoming_openai_tts \
-    --api-key \"${API_KEY}\" \
-    --voice \"${VOICE}\" \
+    --api-key ${API_KEY} \
+    --voice ${VOICE} \
     --uri tcp://${DEFAULT_HOST}:${DEFAULT_PORT}"
+
 
 # Add debug if enabled
 if [ "${DEBUG}" = "true" ]; then
@@ -42,4 +43,4 @@ log "Voice: ${VOICE}"
 log "Port: ${DEFAULT_PORT}"
 
 # Execute the command
-exec $CMD 
+exec $CMD
